@@ -29,7 +29,7 @@ def getdoorstatus():
                         private_key_file=CONFIG.get('door', 'sshkey'))
     doorstatus = shell.run(['cat', '/sys/class/gpio/gpio0/value'])
     # TODO error handling
-    return doorstatus.output
+    return doorstatus.output.strip()
 
 
 def writeoutput():
