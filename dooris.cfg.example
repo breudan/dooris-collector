@@ -1,5 +1,5 @@
 [general]
-classicoutputfile = dooris.out
+jsonoutputfile = dooris.json
 
 [door]
 sshuser = pi

@@ -13,6 +13,7 @@ import spur
 import ConfigParser
 import datetime
 import time
+import json
 from apscheduler.scheduler import Scheduler
 
 CONFIG = ConfigParser.SafeConfigParser()
@@ -27,6 +28,7 @@ def getdoorstatus():
                         username=CONFIG.get('door', 'sshuser'),
                         private_key_file=CONFIG.get('door', 'sshkey'))
     doorstatus = shell.run(['cat', '/sys/class/gpio/gpio0/value'])
+    # TODO error handling
     print 'door is closed' if doorstatus.output else 'door is open'
     return doorstatus.output
 
@@ -35,10 +37,11 @@ def writeoutput():
     """
     Write output files.
     """
-    doorstatus = getdoorstatus() # TODO check for failing updates
-    with open(CONFIG.get('general', 'classicoutputfile'), 'w') as cof:
-        cof.write(doorstatus)
-        cof.write('{}\n'.format(datetime.datetime.now().strftime('%s')))
+    result = {'door': getdoorstatus(),
+              'time': datetime.datetime.now().strftime('%s')}
+
+    with open(CONFIG.get('general', 'jsonoutputfile'), 'w') as jof:
+        jof.write(json.dumps(result))
 
 
 if __name__ == "__main__":
