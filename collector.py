@@ -35,15 +35,16 @@ def writeoutput():
     """
     Write output files.
     """
+    doorstatus = getdoorstatus() # TODO check for failing updates
     with open(CONFIG.get('general', 'classicoutputfile'), 'w') as cof:
-        cof.write(getdoorstatus())
+        cof.write(doorstatus)
         cof.write('{}\n'.format(datetime.datetime.now().strftime('%s')))
 
 
 if __name__ == "__main__":
     SCHED = Scheduler()
     SCHED.start()
-    SCHED.add_interval_job(writeoutput, seconds=20)
+    SCHED.add_interval_job(writeoutput, minutes=2)
 
     while True:
-        time.sleep(60)
+        time.sleep(500)
