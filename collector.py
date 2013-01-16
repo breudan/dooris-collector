@@ -41,7 +41,7 @@ def writeoutput():
               'time': datetime.datetime.now().strftime('%s')}
 
     with open(CONFIG.get('general', 'jsonoutputfile'), 'w') as jof:
-        jof.write(json.dumps(result))
+        jof.write('{0}\n'.format(json.dumps(result)))
 
 
 if __name__ == "__main__":
