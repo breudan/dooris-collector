@@ -1,4 +1,4 @@
-[dooris]
+[door]
 sshuser = pi
 sshhost = 2a00:1234:5678:90ab:cdef:f000:f000:23
 sshkey = dooris.key
