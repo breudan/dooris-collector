@@ -2,3 +2,4 @@ venv/
 *.pyc
 dooris.key
 dooris.cfg
+dooris.out
