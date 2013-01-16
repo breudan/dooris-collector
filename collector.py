@@ -29,7 +29,6 @@ def getdoorstatus():
                         private_key_file=CONFIG.get('door', 'sshkey'))
     doorstatus = shell.run(['cat', '/sys/class/gpio/gpio0/value'])
     # TODO error handling
-    print 'door is closed' if doorstatus.output else 'door is open'
     return doorstatus.output
 
 
