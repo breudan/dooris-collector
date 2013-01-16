@@ -12,9 +12,12 @@
 import spur
 import ConfigParser
 import datetime
+import time
+from apscheduler.scheduler import Scheduler
 
 CONFIG = ConfigParser.SafeConfigParser()
 CONFIG.read('dooris.cfg')
+
 
 def getdoorstatus():
     """
@@ -27,13 +30,20 @@ def getdoorstatus():
     print 'door is closed' if doorstatus.output else 'door is open'
     return doorstatus.output
 
-def writeoutput(doorstatus):
+
+def writeoutput():
     """
     Write output files.
     """
     with open(CONFIG.get('general', 'classicoutputfile'), 'w') as cof:
-        cof.write(doorstatus.output)
+        cof.write(getdoorstatus())
         cof.write('{}\n'.format(datetime.datetime.now().strftime('%s')))
 
+
 if __name__ == "__main__":
-    writeoutput(getdoorstatus())
+    SCHED = Scheduler()
+    SCHED.start()
+    SCHED.add_interval_job(writeoutput, seconds=20)
+
+    while True:
+        time.sleep(60)
