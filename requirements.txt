@@ -1,3 +1,2 @@
 spur==0.2.1
-python-daemon==1.6
 APScheduler==2.1.0
