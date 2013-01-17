@@ -24,7 +24,7 @@ def fetch_doorstatus():
     """Read door status via SSH to Raspi."""
     shell = spur.SshShell(hostname=CONFIG.get('door', 'sshhost'),
                           username=CONFIG.get('door', 'sshuser'),
-                          port=CONFIG.get('router', 'sshport'),
+                          port=CONFIG.get('door', 'sshport'),
                           private_key_file=CONFIG.get('door', 'sshkey'))
     doorstatus = shell.run(['cat', '/sys/class/gpio/gpio0/value'])
     # TODO error handling
