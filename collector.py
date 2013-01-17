@@ -19,7 +19,7 @@ CONFIG = ConfigParser.SafeConfigParser()
 CONFIG.read('dooris.cfg')
 
 
-def getdoorstatus():
+def fetch_doorstatus():
     """Read door status via SSH to Raspi."""
     shell = spur.SshShell(hostname=CONFIG.get('door', 'sshhost'),
                         username=CONFIG.get('door', 'sshuser'),
@@ -29,9 +29,9 @@ def getdoorstatus():
     return doorstatus.output.strip()
 
 
-def writeoutput():
+def write_output():
     """Collect data and write output files."""
-    result = {'door': { 'status': getdoorstatus(),
+    result = {'door': { 'status': fetch_doorstatus(),
                         'last_change': 0, # TODO calculate last change
                         'last_update': datetime.datetime.now().strftime('%s')}
              }
@@ -43,7 +43,7 @@ def writeoutput():
 if __name__ == "__main__":
     SCHED = Scheduler()
     SCHED.start()
-    SCHED.add_interval_job(writeoutput, minutes=2)
+    SCHED.add_interval_job(write_output, minutes=2)
 
     while True:
         time.sleep(500)
