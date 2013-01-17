@@ -27,7 +27,7 @@
                     "required": true
                 }
             }
-        }
+        },
         "router": {
             "type": "object",
             "description": "router status",

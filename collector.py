@@ -37,9 +37,9 @@ def fetch_routerstatus():
                           username=CONFIG.get('router', 'sshuser'),
                           port=int(CONFIG.get('router', 'sshport')),
                           private_key_file=CONFIG.get('router', 'sshkey'))
-    dhcpclients = shell.run(['wc', '-l', '<', '/tmp/dhcp.leases'])
+    dhcpclients = shell.run(['wc', '-l', '/tmp/dhcp.leases'])
     # TODO error handling
-    return dhcpclients.output.strip()
+    return dhcpclients.output.split()[0].strip()
 
 
 def write_output():
