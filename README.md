@@ -25,18 +25,17 @@
                 "properties": {
                     "status": {
                         "type": "string",
-                        "description": "current door status. 0: door is open;
-                                        1: door is closed; -1 error",
+                        "description": "current door status. 0: door is open; 1: door is closed; -1 error",
                         "required": true
                     },
                     "last_change": {
                         "type": "string",
-                        "description", "unix timestamp of last status change",
+                        "description": "unix timestamp of last status change",
                         "required": true
                     },
                     "last_update": {
                         "type": "string",
-                        "description", "unix timestamp of last sensor read",
+                        "description": "unix timestamp of last sensor read",
                         "required": true
                     }
                 }
