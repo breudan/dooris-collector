@@ -47,7 +47,7 @@ def write_output():
     result = {'door': {'status': fetch_doorstatus(),
                        'last_change': '0',  # TODO calculate last change
                        'last_update': datetime.datetime.now().strftime('%s')},
-              'router': {'status': fetch_routerstatus(),
+              'router': {'dhcp': fetch_routerstatus(),
                          'last_change': '0',
                          'last_update': datetime.datetime.now().strftime('%s')},
               'apiversion': 0.1}
