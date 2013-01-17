@@ -32,9 +32,9 @@ def fetch_doorstatus():
 def write_output():
     """Collect data and write output files."""
     result = {'door': {'status': fetch_doorstatus(),
-                       'last_change': 0,  # TODO calculate last change
+                       'last_change': '0',  # TODO calculate last change
                        'last_update': datetime.datetime.now().strftime('%s')},
-              'apiversion': '0.1'}
+              'apiversion': 0.1}
 
     with open(CONFIG.get('general', 'jsonoutputfile'), 'w') as jof:
         jof.write('{0}\n'.format(json.dumps(result)))
