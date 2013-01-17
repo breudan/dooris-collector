@@ -36,8 +36,10 @@ def writeoutput():
     """
     Write output files.
     """
-    result = {'door': getdoorstatus(),
-              'time': datetime.datetime.now().strftime('%s')}
+    result = {'door': { 'status': getdoorstatus(),
+                        'last_change': 0, # TODO calculate last change
+                        'last_update': datetime.datetime.now().strftime('%s')}
+             }
 
     with open(CONFIG.get('general', 'jsonoutputfile'), 'w') as jof:
         jof.write('{0}\n'.format(json.dumps(result)))
