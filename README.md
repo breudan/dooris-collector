@@ -7,3 +7,38 @@
 * `cp dooris.cfg.example dooris.cfg`
 * edit dooris.cfg
 * `python collector.py &`
+
+## output JSON schema
+
+    {
+        "name": "Dooris",
+        "properties": {
+            "apiversion": {
+               "type": "number",
+               "description": "used dooris API version",
+               "required": true
+            },
+            "door": {
+                "type": "object",
+                "description": "door status",
+                "required": false,
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "current door status. 0: door is open; 1: door is closed; -1 error",
+                        "required": true
+                    },
+                    "last_change": {
+                        "type": "string",
+                        "description": "unix timestamp of last status change",
+                        "required": true
+                    },
+                    "last_update": {
+                        "type": "string",
+                        "description": "unix timestamp of last sensor read",
+                        "required": true
+                    }
+                }
+            }
+        }
+    }
