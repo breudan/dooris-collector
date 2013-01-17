@@ -13,6 +13,7 @@ import ConfigParser
 import datetime
 import time
 import json
+import jsonschema
 from apscheduler.scheduler import Scheduler
 
 CONFIG = ConfigParser.SafeConfigParser()
@@ -36,8 +37,14 @@ def write_output():
                        'last_update': datetime.datetime.now().strftime('%s')},
               'apiversion': 0.1}
 
-    with open(CONFIG.get('general', 'jsonoutputfile'), 'w') as jof:
-        jof.write('{0}\n'.format(json.dumps(result)))
+    with open('schema.json', 'r') as schf:
+        schema = json.load(schf)
+        try:
+            jsonschema.validate(result, schema)
+            with open(CONFIG.get('general', 'jsonoutputfile'), 'w') as jof:
+                jof.write('{0}\n'.format(json.dumps(result)))
+        except jsonschema.ValidationError, jsonschema.SchemaError:
+            print "Malformed JSON generated."
 
 
 if __name__ == "__main__":
