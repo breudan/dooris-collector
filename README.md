@@ -47,7 +47,7 @@
                 "properties": {
                     "dhcp": {
                         "type": "string",
-                        "description": "number of active dhcp leases",
+                        "description": "number of active dhcp leases (or -1 on error)",
                         "required": true
                 },
                 "last_change": {
