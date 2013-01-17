@@ -50,7 +50,7 @@ def write_output():
               'router': {'dhcp': fetch_routerstatus(),
                          'last_change': '0',
                          'last_update': datetime.datetime.now().strftime('%s')},
-              'apiversion': 0.1}
+              'apiversion': 1}
 
     with open('schema.json', 'r') as schf:
         schema = json.load(schf)
