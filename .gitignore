@@ -1,6 +1,5 @@
 venv/
 *.pyc
-dooris.key
+*.key
 dooris.cfg
-dooris.out
 dooris.json
