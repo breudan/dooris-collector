@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    Dooris Collector
+""" Dooris Collector
     ================
 
     Collects data from various Dooris sensors, conditions them,
@@ -21,9 +20,7 @@ CONFIG.read('dooris.cfg')
 
 
 def getdoorstatus():
-    """
-    Read door status via SSH to Raspi.
-    """
+    """Read door status via SSH to Raspi."""
     shell = spur.SshShell(hostname=CONFIG.get('door', 'sshhost'),
                         username=CONFIG.get('door', 'sshuser'),
                         private_key_file=CONFIG.get('door', 'sshkey'))
@@ -33,9 +30,7 @@ def getdoorstatus():
 
 
 def writeoutput():
-    """
-    Write output files.
-    """
+    """Collect data and write output files."""
     result = {'door': { 'status': getdoorstatus(),
                         'last_change': 0, # TODO calculate last change
                         'last_update': datetime.datetime.now().strftime('%s')}
