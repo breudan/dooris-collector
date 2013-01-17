@@ -4,4 +4,11 @@ jsonoutputfile = dooris.json
 [door]
 sshuser = pi
 sshhost = 2a00:1234:5678:90ab:cdef:f000:f000:23
+sshport = 22
 sshkey = dooris.key
+
+[router]
+sshuser = bot
+sshhost = 2a00:1234:5678:90ab:cdef:f000:f000:42
+sshport = 22
+sshkey = router.key
