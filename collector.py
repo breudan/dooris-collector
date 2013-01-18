@@ -14,7 +14,6 @@ import datetime
 import time
 import json
 import jsonschema
-import daemon
 from apscheduler.scheduler import Scheduler
 
 
@@ -91,15 +90,10 @@ class Collector:
         self.write_output()
 
 
-def runloop():
-    """schedule collector task and loop forever"""
-    sched = Scheduler()
-    coll = Collector()
-    sched.start()
-    sched.add_interval_job(coll.collect_and_write, minutes=2)
+if __name__ == "__main__":
+    SCHED = Scheduler()
+    COLL = Collector()
+    SCHED.start()
+    SCHED.add_interval_job(COLL.collect_and_write, minutes=2)
     while True:
         time.sleep(500)
-
-if __name__ == "__main__":
-    with daemon.DaemonContext(working_directory='/home/seosamh/dooris-collector/'):
-        runloop()
