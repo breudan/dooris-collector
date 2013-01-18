@@ -16,74 +16,85 @@ import json
 import jsonschema
 from apscheduler.scheduler import Scheduler
 
-CONFIG = ConfigParser.SafeConfigParser()
-CONFIG.read('dooris.cfg')
-output = {'apiversion': 1}
 
-def fetch_doorstatus():
-    """Read door status via SSH to Raspi."""
-    shell = spur.SshShell(hostname=CONFIG.get('door', 'sshhost'),
-                          username=CONFIG.get('door', 'sshuser'),
-                          port=int(CONFIG.get('door', 'sshport')),
-                          private_key_file=CONFIG.get('door', 'sshkey'))
-    try:
-        doorstatus = shell.run(['cat', '/sys/class/gpio/gpio0/value']).output
-        doorstatus = doorstatus.strip()
-    except:
-        # no difference in misconfiguration and actual errors.
-        # might need improvement. :)
-        doorstatus = '-1'
-    now = datetime.datetime.now().strftime('%s')
-    if not output.has_key('door'):
-        output['door'] = {'status': '-1'}
-    if output['door']['status'] != doorstatus:
-        output['door']['status'] = doorstatus
-        output['door']['last_change'] = now
-    output['door']['last_update'] = now
+class Collector:
+    """Collects various Dooris sensor data and write output files"""
 
+    def __init__(self):
+        self.config = ConfigParser.SafeConfigParser()
+        self.config.read('dooris.cfg')
+        self.output = {'apiversion': 1}
 
-def fetch_routerstatus():
-    """Read router status via SSH to router."""
-    shell = spur.SshShell(hostname=CONFIG.get('router', 'sshhost'),
-                          username=CONFIG.get('router', 'sshuser'),
-                          port=int(CONFIG.get('router', 'sshport')),
-                          private_key_file=CONFIG.get('router', 'sshkey'))
-    try:
-        dhcpclients = shell.run(['wc', '-l', '/tmp/dhcp.leases']).output
-        dhcpclients = dhcpclients.split()[0].strip()
-    except:
-        # no difference in misconfiguration and actual errors.
-        # might need improvement. :)
-        dhcpclients = '-1'
-    now = datetime.datetime.now().strftime('%s')
-    if not output.has_key('router'):
-        output['router'] = {'dhcp': '-1'}
-    if output['router']['dhcp'] != dhcpclients:
-        output['router']['dhcp'] = dhcpclients
-        output['router']['last_change'] = now
-    output['router']['last_update'] = now
-
-
-def write_output():
-    """Collect data and write output files."""
-    fetch_doorstatus()
-    fetch_routerstatus()
-
-    with open('schema.json', 'r') as schf:
-        schema = json.load(schf)
+    def fetch_doorstatus(self):
+        """Read door status via SSH to Raspi."""
+        shell = spur.SshShell(hostname=self.config.get('door', 'sshhost'),
+                              username=self.config.get('door', 'sshuser'),
+                              port=int(self.config.get('door', 'sshport')),
+                              private_key_file=self.config.get('door',
+                                                               'sshkey'))
         try:
-            jsonschema.validate(output, schema)
-            with open(CONFIG.get('general', 'jsonoutputfile'), 'w') as jof:
-                jof.write('{0}\n'.format(json.dumps(output)))
-        except jsonschema.ValidationError, jsonschema.SchemaError:
-            print json.dumps(output)
-            print "Malformed JSON generated."
+            doorstatus = shell.run(['cat',
+                                    '/sys/class/gpio/gpio0/value']).output
+            doorstatus = doorstatus.strip()
+        except:
+            # no difference in misconfiguration and actual errors.
+            # might need improvement. :)
+            doorstatus = '-1'
+        now = datetime.datetime.now().strftime('%s')
+        if not 'door' in self.output:
+            self.output['door'] = {'status': '-1'}
+        if self.output['door']['status'] != doorstatus:
+            self.output['door']['status'] = doorstatus
+            self.output['door']['last_change'] = now
+        self.output['door']['last_update'] = now
+
+    def fetch_routerstatus(self):
+        """Read router status via SSH to router."""
+        shell = spur.SshShell(hostname=self.config.get('router', 'sshhost'),
+                              username=self.config.get('router', 'sshuser'),
+                              port=int(self.config.get('router', 'sshport')),
+                              private_key_file=self.config.get('router',
+                                                               'sshkey'))
+        try:
+            dhcpclients = shell.run(['wc', '-l', '/tmp/dhcp.leases']).output
+            dhcpclients = dhcpclients.split()[0].strip()
+        except:
+            # no difference in misconfiguration and actual errors.
+            # might need improvement. :)
+            dhcpclients = '-1'
+        now = datetime.datetime.now().strftime('%s')
+        if not 'router' in self.output:
+            self.output['router'] = {'dhcp': '-1'}
+        if self.output['router']['dhcp'] != dhcpclients:
+            self.output['router']['dhcp'] = dhcpclients
+            self.output['router']['last_change'] = now
+        self.output['router']['last_update'] = now
+
+    def write_output(self):
+        """Collect data and write output files."""
+        with open('schema.json', 'r') as schf:
+            schema = json.load(schf)
+            try:
+                jsonschema.validate(self.output, schema)
+                with open(self.config.get('general', 'jsonoutputfile'),
+                          'w') as jof:
+                    jof.write('{0}\n'.format(json.dumps(self.output)))
+            except jsonschema.ValidationError, jsonschema.SchemaError:
+                print json.dumps(self.output)
+                print "Malformed JSON generated."
+
+    def collect_and_write(self):
+        """collect each sensor, write each output"""
+        self.fetch_doorstatus()
+        self.fetch_routerstatus()
+        self.write_output()
 
 
 if __name__ == "__main__":
     SCHED = Scheduler()
+    COLLECTOR = Collector()
     SCHED.start()
-    SCHED.add_interval_job(write_output, minutes=2)
+    SCHED.add_interval_job(COLLECTOR.write_output, minutes=2)
 
     while True:
         time.sleep(500)
