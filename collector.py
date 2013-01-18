@@ -26,10 +26,14 @@ def fetch_doorstatus():
                           username=CONFIG.get('door', 'sshuser'),
                           port=int(CONFIG.get('door', 'sshport')),
                           private_key_file=CONFIG.get('door', 'sshkey'))
-    doorstatus = shell.run(['cat', '/sys/class/gpio/gpio0/value']).output
-    doorstatus = doorstatus.strip()
+    try:
+        doorstatus = shell.run(['cat', '/sys/class/gpio/gpio0/value']).output
+        doorstatus = doorstatus.strip()
+    except:
+        # no difference in misconfiguration and actual errors.
+        # might need improvement. :)
+        doorstatus = '-1'
     now = datetime.datetime.now().strftime('%s')
-    # TODO error handling
     if not output.has_key('door'):
         output['door'] = {'status': '-1'}
     if output['door']['status'] != doorstatus:
@@ -44,10 +48,14 @@ def fetch_routerstatus():
                           username=CONFIG.get('router', 'sshuser'),
                           port=int(CONFIG.get('router', 'sshport')),
                           private_key_file=CONFIG.get('router', 'sshkey'))
-    dhcpclients = shell.run(['wc', '-l', '/tmp/dhcp.leases']).output
-    dhcpclients = dhcpclients.split()[0].strip()
+    try:
+        dhcpclients = shell.run(['wc', '-l', '/tmp/dhcp.leases']).output
+        dhcpclients = dhcpclients.split()[0].strip()
+    except:
+        # no difference in misconfiguration and actual errors.
+        # might need improvement. :)
+        dhcpclients = '-1'
     now = datetime.datetime.now().strftime('%s')
-    # TODO error handling
     if not output.has_key('router'):
         output['router'] = {'dhcp': '-1'}
     if output['router']['dhcp'] != dhcpclients:
