@@ -23,7 +23,7 @@ class Collector:
     def __init__(self):
         self.config = ConfigParser.SafeConfigParser()
         self.config.read('dooris.cfg')
-        self.output = {'apiversion': 1}
+        self.output = {'apiversion': 2}
 
     def fetch_doorstatus(self):
         """Read door status via SSH to Raspi."""
@@ -40,7 +40,7 @@ class Collector:
             # no difference in misconfiguration and actual errors.
             # might need improvement. :)
             doorstatus = '-1'
-        now = datetime.datetime.now().strftime('%s')
+        now = int(datetime.datetime.now().strftime('%s'))
         if not 'door' in self.output:
             self.output['door'] = {'status': '-1'}
         if self.output['door']['status'] != doorstatus:
@@ -62,7 +62,7 @@ class Collector:
             # no difference in misconfiguration and actual errors.
             # might need improvement. :)
             dhcpclients = '-1'
-        now = datetime.datetime.now().strftime('%s')
+        now = int(datetime.datetime.now().strftime('%s'))
         if not 'router' in self.output:
             self.output['router'] = {'dhcp': '-1'}
         if self.output['router']['dhcp'] != dhcpclients:
