@@ -29,12 +29,12 @@
                         "required": true
                     },
                     "last_change": {
-                        "type": "string",
+                        "type": "number",
                         "description": "unix timestamp of last status change",
                         "required": true
                     },
                     "last_update": {
-                        "type": "string",
+                        "type": "number",
                         "description": "unix timestamp of last sensor read",
                         "required": true
                     }
@@ -51,12 +51,12 @@
                         "required": true
                     },
                     "last_change": {
-                        "type": "string",
+                        "type": "number",
                         "description": "unix timestamp of last status change",
                         "required": true
                     },
                     "last_update": {
-                        "type": "string",
+                        "type": "number",
                         "description": "unix timestamp of last sensor read",
                         "required": true
                     }
