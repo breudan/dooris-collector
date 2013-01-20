@@ -21,9 +21,24 @@ class Collector:
     """Collects various Dooris sensor data and write output files"""
 
     def __init__(self):
+        self.apiversion = 2
         self.config = ConfigParser.SafeConfigParser()
         self.config.read('dooris.cfg')
-        self.output = {'apiversion': 2}
+        with open('schema.json', 'r') as schf:
+            self.schema = json.load(schf)
+        try:
+            with open(self.config.get('general', 'jsonoutputfile'),
+                      'r') as oldjsonfile:
+                oldjson = json.load(oldjsonfile)
+            jsonschema.validate(oldjson, self.schema)
+            if oldjson['apiversion'] == self.apiversion:
+                self.output = oldjson
+            else:
+                self.output = {'apiversion': self.apiversion}
+        except jsonschema.ValidationError, jsonschema.SchemaError:
+            self.output = {'apiversion': self.apiversion}
+        except IOError:
+            self.output = {'apiversion': self.apiversion}
 
     def fetch_doorstatus(self):
         """Read door status via SSH to Raspi."""
@@ -72,16 +87,14 @@ class Collector:
 
     def write_output(self):
         """Collect data and write output files."""
-        with open('schema.json', 'r') as schf:
-            schema = json.load(schf)
-            try:
-                jsonschema.validate(self.output, schema)
-                with open(self.config.get('general', 'jsonoutputfile'),
-                          'w') as jof:
-                    jof.write('{0}\n'.format(json.dumps(self.output)))
-            except jsonschema.ValidationError, jsonschema.SchemaError:
-                print json.dumps(self.output)
-                print "Malformed JSON generated."
+        try:
+            jsonschema.validate(self.output, self.schema)
+            with open(self.config.get('general', 'jsonoutputfile'),
+                      'w') as jof:
+                jof.write('{0}\n'.format(json.dumps(self.output)))
+        except jsonschema.ValidationError, jsonschema.SchemaError:
+            print json.dumps(self.output)
+            print "Malformed JSON generated."
 
     def collect_and_write(self):
         """collect each sensor, write each output"""
