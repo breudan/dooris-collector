@@ -79,6 +79,12 @@ class Collector:
         dhcpclients = dhcpclients.split()[0].strip()
         self._update_result('router', ('dhcp', dhcpclients))
 
+    def fetch_terminal(self):
+        """check if public terminal is on"""
+        terminalstatus = self._ssh_exec('terminal', ['cat', 'status'])
+        terminalstatus = terminalstatus.strip()
+        self._update_result('terminal', ('status', terminalstatus))
+
     def write_output(self):
         """Collect data and write output files."""
         try:
@@ -94,6 +100,7 @@ class Collector:
         """collect each sensor, write each output"""
         self.fetch_doorstatus()
         self.fetch_routerstatus()
+        self.fetch_terminal()
         self.write_output()
 
 
