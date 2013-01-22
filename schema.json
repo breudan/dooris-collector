@@ -55,7 +55,7 @@
             "description": "terminal status",
             "required": false,
             "properties": {
-                "dhcp": {
+                "status": {
                     "type": "string",
                     "description": "1 if terminal is on (or -1 on error)",
                     "required": true
