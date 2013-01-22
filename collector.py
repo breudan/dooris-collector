@@ -81,7 +81,8 @@ class Collector:
 
     def fetch_terminal(self):
         """check if public terminal is on"""
-        terminalstatus = self._ssh_exec('terminal', ['cat', 'status'])
+        terminalstatus = self._ssh_exec('terminal', ['cat',
+                                                     '/home/dooris/status'])
         terminalstatus = terminalstatus.strip()
         self._update_result('terminal', ('status', terminalstatus))
 
