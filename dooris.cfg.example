@@ -12,3 +12,9 @@ sshuser = bot
 sshhost = 2a00:1234:5678:90ab:cdef:f000:f000:42
 sshport = 22
 sshkey = router.key
+
+[terminal]
+sshuser = bot
+sshhost = 2a00:1234:5678:90ab:cdef:f000:f000:77
+sshport = 22
+sshkey = router.key
